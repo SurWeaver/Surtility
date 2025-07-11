@@ -1,0 +1,224 @@
+# SurWeaver + Utility = Surtility
+
+## Предназначение
+
+Данная библиотека создана и используется мной для игрового проекта на [MonoGame](https://monogame.net/) с использованием библиотеки [ecslite](https://github.com/Leopotam/ecslite).
+
+Кроме инструментов по работе с MonoGame и ecslite, в библиотеке находятся **полезные вещи для более широкого применения**. Я переписал ease-функции полезные для плавных анимаций, а также добавил bat-скрипт по созданию проекта на MonoGame с подключением необходимых библиотек.
+
+Изначально это было и является моим локальным решением, которое не претендует на что-то конкурентноспособное (учитывая то, что этот набор и так достаточно специфичен, чтобы были какие-то аналоги).
+
+## Содержимое библиотеки
+
+* **Генератор сущностей** с цепным вызовом функций (Tools) (примеры ниже);
+* Функция расширения, позволяющая добавлять компоненты через Pool'ы в одну строку (Extensions);
+* Функция расширения, позволяющая получать компонент с одиночной сущности в фильтре (Extensions);
+* Системы+компоненты для использования deltaTime внутри своих систем (Timing);
+* Системы+компоненты для простого рисования спрайтов (Drawing);
+* Система ввода (Input) (в зачаточном состоянии);
+* Переписанный на **C# набор ease-функций** с сайта https://easings.net/ для Tween-анимаций (Tweening);
+* **bat-скрипт, создающий проект на MonoGame с подключением этой библиотеки и ecs-фреймворка** (в корне проекта, можно переделать под себя);
+
+## Как заставить это работать у себя
+
+Скачать проект и поместить его в удобное место на компьютере.
+Я для себя завёл папку на диске `D:\ForeignProjects` (т.е. чужие проекты).
+
+Дальше алгоритм разветвляется на два подпункта ниже:
+
+### Хочу добавить в существующий проект
+
+Заходим в свой проект, открываем в терминале VS Code папку проекта и там вводим команду:
+
+```
+dotnet add reference D:\ForeignProjects\Surtility\Surtility\Surtility.csproj
+```
+Провозглашение словно троекратное "ура"!
+
+**Или** же просто добавляем в .csproj-файл следующие строки:
+```
+  <ItemGroup>
+    <ProjectReference Include="D:\ForeignProjects\Surtility\Surtility\Surtility.csproj" />
+  </ItemGroup>
+```
+
+
+### Хочу сделать новый проект да так, чтобы можно было клепать эти проекты по щелчку пальца!
+
+Ооо, а вас затянуло!
+
+У меня для вас есть скрипт, который потребует наличия установленного [dotnet](https://dotnet.microsoft.com/en-us/) и шаблонов [MonoGame](https://monogame.net/) (кои вы можете скачать и установить по ссылке).
+
+Для удобства у себя на компьютере можно завести некую папку `Scripts`, где будет содержаться мой и любые ваши скрипты, если вас и это затянет.
+
+В пуске ищем "Изменение системных переменных среды". Можно быстро найти по части слова, например, "перем".
+В "PATH" добавляем нашу созданную папку.
+
+Помещаем в эту папку файл `CreateEcsMonoGameProject.bat` из корня этого репозитория.
+
+Заходим в папку, где будет лежать папка проекта (т.е. если вы хотите, чтобы проект располагался в `D:/Projects/MyCoolProject`, то необходимо зайти в папку `D:/Projects` и НЕ создавать папку `MyCoolProject`).
+
+Далее вы можете через ПКМ "Открыть в терминале" текущую папку. Скрипт работает из PowerShell и обычной командной строки.
+
+Необходимо ввести:
+```
+CreateEcsMonoGameProject <НазваниеПроектаБезПробеловДаИБезСкобокТоже>
+```
+
+Далее вы увидите:
+```
+PS D:\Projects> CreateEcsMonoGameProject MyCoolProject
+Шаблон "Файл решения" успешно создан.
+
+Шаблон "Библиотека классов" успешно создан.
+
+Идет обработка действий после создания...
+Восстановление D:\Projects\MyCoolProject\MyCoolProject.Core\MyCoolProject.Core.csproj:
+Восстановление выполнено.
+
+
+Шаблон "MonoGame Cross-Platform Desktop Application" успешно создан.
+
+Идет обработка действий после создания...
+Восстановление D:\Projects\MyCoolProject\MyCoolProject.Main\MyCoolProject.Main.csproj:
+Восстановление выполнено.
+
+
+Проект "MyCoolProject.Core\MyCoolProject.Core.csproj" добавлен в решение.
+Проект "MyCoolProject.Main\MyCoolProject.Main.csproj" добавлен в решение.
+Ссылка "..\..\Projects\Surtility\Surtility\Surtility.csproj" добавлена в проект.
+Ссылка "..\MyCoolProject.Core\MyCoolProject.Core.csproj" добавлена в проект.
+Project MyCoolProject successfully created!
+PS D:\Projects>
+```
+
+Далее откроется Visual Studio Code с созданным решением!
+
+Весь скрипт прокомментирован и поделён на блоки, можете отредактировать на своё усмотрение в любом текстовом редакторе!
+
+
+## Примеры использования кода
+
+### Генератор сущностей
+
+```csharp
+// Резервируем место для генератора (можно в классе Game)
+private readonly EntityGenerator _entityGenerator;
+
+...
+
+// Инициализация после создания ECS-мира, потому что он нужен для создания новых сущностей
+_entityGenerator = new EntityGenerator(_ecsWorld);
+
+...
+
+// Непосредственное применение - создание сущностей
+_entityGenerator.NewEntity()
+    .With(new GridSize() { Point = new(64) });
+
+_entityGenerator.NewEntity()
+    .With(new PlayerMarker())
+    .With(new Sprite(_playerTexture))
+    .With(new Coordinate(2, 3))
+    .With(new FrameCount(5))
+    .With(new CurrentFrame(2));
+```
+
+Лучше оставлять явным определение внутренних полей без конструктора, когда неочевидно, какое значение находится внутри.
+
+### Расширение Pool
+
+В исходном виде, для того, чтобы добавить компонент к сущности с заданными значениями, необходимо написать следующее:
+
+```csharp
+ref Component1 c1 = ref pool.Add(entity);
+с1.Value = 42;
+```
+
+Когда компонентов и/или полей внутри компонентов несколько, то код сильно разрастается.
+
+Предлагаемый вариант изолирует присвоение компоненту нужного значения внутри функции:
+
+```csharp
+pool.Add(entity, new Component1() { Value = 42 });
+// или
+pool.Add(entity, new Component1(42));
+// если решили сделать конструктор
+```
+
+### Чутка кривое расширение Filter
+
+Если вам, как и мне, хочется хранить единственную сущность, которая будет хранить важную для других сущностей информацию, то этот способ сократит и спрячет некрасивый код, ведь фильтры и их enumerator'ы предназначены для прохождения по множеству значений, а мы помещаем единственную сущность с одним или более компонентами.
+
+В таком случае хотелось бы более ёмкий вариант написания этого.
+
+Представим, что у нас следующие пулы и фильтры для работы системы.
+```csharp
+// Эта пара фильтрует и даёт доступ к набору игровых NPC (код сугубо надуманный)
+private EcsFilter _npcFilter;
+private EcsPool<Npc> _npcPool;
+
+// Эта пара фильтрует и даёт доступ к единственной сущности с данными, нужными для набора NPC,
+// которым эти данные нужны для калькуляции (например, там хранится сила гравитации)
+private EcsFilter _worldSettingFilter;
+private EcsPool<WorldSetting> _worldSettingPool;
+```
+
+В данном случае метод `Run` содержит следующие строки:
+```csharp
+public void Run(IEcsSystems systems)
+{
+    var settingEntityCount = worldSettingFilter.GetEntitiesCount();
+
+    if (settingEntityCount > 1)
+        throw new Exception("Дубликат настроек мира!");
+    if (settingEntityCount < 1)
+        throw new Exception("Настройки мира отсутствуют!");
+
+    WorldSetting setting;
+    foreach (var entity in worldSettingFilter)
+    {
+        setting = _worldSettingPool.Get(entity);
+    }
+
+    // * Дальнейшая логика с NPC *
+}
+```
+
+Есть более читабельная альтернатива циклу:
+```csharp
+WorldSetting setting;
+var entityCount = filter.GetEntitiesCount();
+if (entityCount != 1)
+{
+    throw new Exception("Неправильное количество сущностей: " + entityCount.ToString());
+}
+else
+{
+    var entity = filter.GetEnumerator().Current;
+    setting = _worldSettingPool.Get(entity);
+}
+```
+
+Вот же предлагаемая альтернатива и пример её использования из этого же репозитория.
+
+Файл `UpdateTweenTimeSystem.cs`:
+
+```csharp
+public void Run(IEcsSystems systems)
+{
+    if (_tweenFilter.GetEntitiesCount() < 1)
+        return;
+
+    var deltaTime = _dtFilter.GetSingleEntityComponent(_dtPool).Seconds;
+
+    foreach (var entity in _tweenFilter)
+    {
+        ref var tween = ref _tweenPool.Get(entity);
+
+        tween.CurrentTime = Math.Min(tween.CurrentTime + deltaTime, tween.Duration);
+        tween.Percent = (float)(tween.CurrentTime / tween.Duration);
+    }
+}
+```
+
