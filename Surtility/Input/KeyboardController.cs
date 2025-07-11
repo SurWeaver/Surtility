@@ -18,8 +18,18 @@ public class KeyboardController
         return _currentState.IsKeyDown(key);
     }
 
-    public bool IsPressedNow(Keys key)
+    public bool IsJustPressed(Keys key)
     {
-        return !_previousState.IsKeyDown(key) && _currentState.IsKeyDown(key);
+        return _previousState.IsKeyUp(key) && _currentState.IsKeyDown(key);
+    }
+
+    public bool IsReleased(Keys key)
+    {
+        return _currentState.IsKeyUp(key);
+    }
+
+    public bool IsJustReleased(Keys key)
+    {
+        return _previousState.IsKeyDown(key) && _currentState.IsKeyUp(key);
     }
 }
