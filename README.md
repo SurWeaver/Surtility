@@ -101,27 +101,28 @@ PS D:\Projects>
 
 ### Генератор сущностей
 
+Это статический класс, используемый для массового добавления компонентов на новую или существующую сущность.
+
 ```csharp
-// Резервируем место для генератора (можно в классе Game)
-private readonly EntityGenerator _entityGenerator;
-
-...
-
 // Инициализация после создания ECS-мира, потому что он нужен для создания новых сущностей
-_entityGenerator = new EntityGenerator(_ecsWorld);
+EntityGenerator.Initialize(_ecsWorld);
 
 ...
 
 // Непосредственное применение - создание сущностей
-_entityGenerator.NewEntity()
+EntityGenerator.NewEntity()
     .With(new GridSize() { Point = new(64) });
 
-_entityGenerator.NewEntity()
+EntityGenerator.NewEntity()
     .With(new PlayerMarker())
     .With(new Sprite(_playerTexture))
     .With(new Coordinate(2, 3))
     .With(new FrameCount(5))
     .With(new CurrentFrame(2));
+
+EntityGenerator.FillEntity(playerEntity)
+    .With(new OnFire())
+    .With(new EffectDuration(3f));
 ```
 
 Лучше оставлять явным определение внутренних полей без конструктора, когда неочевидно, какое значение находится внутри.
