@@ -17,6 +17,9 @@ dotnet new mgdesktopgl -o %1.Main
 @REM Замена старой версии языка в игровом проекте на совместимый с библиотекой (с 8 на 9)
 powershell -Command "(Get-Content '%1.Main\%1.Main.csproj') -replace '<TargetFramework>net[0-9.]+</TargetFramework>', '<TargetFramework>net9.0</TargetFramework>' | Set-Content '%1.Main\%1.Main.csproj'"
 
+@REM Замена nullable enable на disable
+powershell -Command "(Get-Content '%1.Main\%1.Main.csproj') -replace '<Nullable>enable</Nullable>', '<Nullable>disable</Nullable>' | Set-Content '%1.Main\%1.Main.csproj'"
+
 @REM Связка проектов с решением
 dotnet sln add %1.Core/%1.Core.csproj
 dotnet sln add %1.Main/%1.Main.csproj
