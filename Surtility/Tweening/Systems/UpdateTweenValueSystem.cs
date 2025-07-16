@@ -1,4 +1,5 @@
 using Leopotam.EcsLite;
+using Surtility.Extensions;
 using Surtility.Tweening.Components;
 
 namespace Surtility.Tweening.Systems;
@@ -19,7 +20,6 @@ public class UpdateTweenValueSystem<T>(Func<T, T, float, T> lerpFunction)
         _filter = world.Filter<Tween>()
             .Inc<Easing>()
             .Inc<TweenValuePair<T>>()
-            .Inc<TweenCurrentValue<T>>()
             .End();
 
         _tweenPool = world.GetPool<Tween>();
@@ -37,7 +37,8 @@ public class UpdateTweenValueSystem<T>(Func<T, T, float, T> lerpFunction)
             ref var easingType = ref _easingPool.Get(entity).Type;
 
             ref var valuePair = ref _tweenValuePool.Get(entity);
-            ref var currentValue = ref _tweenCurrentValuePool.Get(entity);
+
+            ref var currentValue = ref _tweenCurrentValuePool.GetOrAdd(entity);
 
             var easingFunction = EasingFunctions.GetEaseFunction(easingType);
             var easeProgress = easingFunction(tween.Percent);
