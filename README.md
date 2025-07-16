@@ -196,8 +196,11 @@ if (entityCount != 1)
 }
 else
 {
-    var entity = filter.GetEnumerator().Current;
-    setting = _worldSettingPool.Get(entity);
+    foreach (var entity in _filter)
+    {
+        setting = _worldSettingPool.Get(entity);
+        break;
+    }
 }
 ```
 
