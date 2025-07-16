@@ -9,7 +9,7 @@ public class UpdateDeltaTimeSystem(DeltaTimer deltaTimer)
     : IEcsInitSystem, IEcsRunSystem
 {
     private EcsFilter _filter;
-    private EcsPool<DeltaTime> _pool;
+    private EcsPool<DeltaTime> _deltaTimePool;
 
     public void Init(IEcsSystems systems)
     {
@@ -18,18 +18,18 @@ public class UpdateDeltaTimeSystem(DeltaTimer deltaTimer)
         _filter = world.Filter<DeltaTime>()
             .End();
 
-        _pool = world.GetPool<DeltaTime>();
+        _deltaTimePool = world.GetPool<DeltaTime>();
 
         if (_filter.GetEntitiesCount() == 0)
         {
             var entity = world.NewEntity();
-            _pool.Add(entity);
+            _deltaTimePool.Add(entity);
         }
     }
 
     public void Run(IEcsSystems systems)
     {
-        ref var deltaTime = ref _filter.GetSingleEntityComponent(_pool);
+        ref var deltaTime = ref _filter.GetSingleEntityComponent(_deltaTimePool);
         deltaTime.Seconds = deltaTimer.GetDeltaSeconds();
     }
 }
