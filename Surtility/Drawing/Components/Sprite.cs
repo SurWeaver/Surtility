@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Surtility.Drawing.Components;
 
-public struct Sprite
+public struct Sprite(Texture2D texture)
 {
-    public Texture2D Texture;
+    public Texture2D Texture = texture;
 }
