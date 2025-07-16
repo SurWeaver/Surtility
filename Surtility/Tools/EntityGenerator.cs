@@ -42,5 +42,7 @@ public static class EntityGenerator
             pool.Add(_entity, component);
             return this;
         }
+
+        public int End() => _entity;
     }
 }
