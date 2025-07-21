@@ -376,7 +376,7 @@ public class GamePadController
 * `Timing.UpdateDeltaTimeSystem` (обновили deltaTime);
 * `UpdateTweenTimeSystem` (обновили время у всех tween-анимаций);
 * `UpdateTweenValueSystem<КаждыйТипКоторыйВыАнимируете>` (обновили значения конкретного типа);
-* Любые ваши системы, переносящие значения анимаций на ваши компоненты;
+* `AnimateComponentSystem<TComponent, TValue>` (перенесли значения из анимаций на свои компоненты);
 * `CleanTweenSystem` (удаляет все tween-компоненты + ваши кастомные, которые туда передадите).
 
 ## Drawing
