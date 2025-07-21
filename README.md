@@ -47,7 +47,7 @@ dotnet add reference D:\ForeignProjects\Surtility\Surtility\Surtility.csproj
 
 Ооо, а вас затянуло!
 
-У меня для вас есть скрипт, который потребует наличия установленного [dotnet](https://dotnet.microsoft.com/en-us/) и шаблонов [MonoGame](https://monogame.net/) (кои вы можете скачать и установить по ссылке).
+У меня для вас есть скрипт, который потребует наличия установленного [dotnet](https://dotnet.microsoft.com/en-us/), шаблонов [MonoGame](https://monogame.net/) (кои вы можете скачать и установить по ссылке), а также настроенного [Git'а](https://git-scm.com/).
 
 Для удобства у себя на компьютере можно завести некую папку `Scripts`, где будет содержаться мой и любые ваши скрипты, если вас и это затянет.
 
@@ -65,37 +65,63 @@ dotnet add reference D:\ForeignProjects\Surtility\Surtility\Surtility.csproj
 CreateEcsMonoGameProject <НазваниеПроектаБезПробеловДаИБезСкобокТоже>
 ```
 
-Далее вы увидите:
+Скрипт создаёт решение с 2 проектами, игра от MonoGame и библиотека классов, также в папке с решением будет присутствовать библиотека Surtility. Это позволит просматривать код библиотеки, а также ставить в ней работающие точки останова (Breakpoint'ы). Так как это реализовано через под-модули Git'а, скрипт инициализирует пустой репозиторий, в который внедряет этот модуль.
+
+Также скрипт в конце алгоритма собирает проект и открывает его в Visual Studio Code.
+
+> ОБРАТИТЕ ВНИМАНИЕ! Из-за этого у вас в рабочей папке находится более одного файла решения (.sln), ваша настроенная среда разработки может попросить указать главное решение, выбирайте Main, а не Surtility. Иначе подсказки в коде работать не будут, библиотеку Surtility не будет видно.
+
+Пример уведомления:
+
+![Пример уведомления](ForReadMe_NotificationExample.png)
+
+
+После ввода команды вы можете увидеть подобный вывод, если всё правильно настроено:
 ```
-PS D:\Projects> CreateEcsMonoGameProject MyCoolProject
+D:\Work\Projects>CreateEcsMonoGameProject MyProject
 Шаблон "Файл решения" успешно создан.
 
 Шаблон "Библиотека классов" успешно создан.
 
 Идет обработка действий после создания...
-Восстановление D:\Projects\MyCoolProject\MyCoolProject.Core\MyCoolProject.Core.csproj:
+Восстановление D:\Work\Projects\MyProject\MyProject.Core\MyProject.Core.csproj:
 Восстановление выполнено.
 
 
 Шаблон "MonoGame Cross-Platform Desktop Application" успешно создан.
 
 Идет обработка действий после создания...
-Восстановление D:\Projects\MyCoolProject\MyCoolProject.Main\MyCoolProject.Main.csproj:
+Восстановление D:\Work\Projects\MyProject\MyProject.Main\MyProject.Main.csproj:
 Восстановление выполнено.
 
 
-Проект "MyCoolProject.Core\MyCoolProject.Core.csproj" добавлен в решение.
-Проект "MyCoolProject.Main\MyCoolProject.Main.csproj" добавлен в решение.
-Ссылка "..\..\Projects\Surtility\Surtility\Surtility.csproj" добавлена в проект.
-Ссылка "..\MyCoolProject.Core\MyCoolProject.Core.csproj" добавлена в проект.
-Project MyCoolProject successfully created!
-PS D:\Projects>
+Initialized empty Git repository in D:/Work/Projects/MyProject/.git/
+Cloning into 'D:/Work/Projects/MyProject/Surtility'...
+remote: Enumerating objects: 192, done.
+remote: Counting objects: 100% (192/192), done.
+remote: Compressing objects: 100% (115/115), done.
+remote: Total 192 (delta 85), reused 170 (delta 63), pack-reused 0 (from 0)
+Receiving objects: 100% (192/192), 37.13 KiB | 413.00 KiB/s, done.
+Resolving deltas: 100% (85/85), done.
+warning: in the working copy of '.gitmodules', LF will be replaced by CRLF the next time Git touches it
+Проект "MyProject.Core\MyProject.Core.csproj" добавлен в решение.
+Проект "MyProject.Main\MyProject.Main.csproj" добавлен в решение.
+Проект "Surtility\Surtility\Surtility.csproj" добавлен в решение.
+Ссылка "..\Surtility\Surtility\Surtility.csproj" добавлена в проект.
+Ссылка "..\MyProject.Core\MyProject.Core.csproj" добавлена в проект.
+Восстановление завершено (0,6 с)
+  ecslite успешно выполнено (0,0 с) → D:\ForeignProjects\ecslite\bin\Debug\net8.0\ecslite.dll
+  Surtility успешно выполнено (0,2 с) → Surtility\Surtility\bin\Debug\net9.0\Surtility.dll
+  MyProject.Core успешно выполнено (0,3 с) → MyProject.Core\bin\Debug\net9.0\MyProject.Core.dll
+  MyProject.Main успешно выполнено (0,8 с) → MyProject.Main\bin\Debug\net9.0\MyProject.Main.dll
+
+Сборка успешно выполнено через 1,4 с
+
+Доступны обновления рабочей нагрузки. Для получения дополнительных сведений запустите `dotnet workload list`.
+Project MyProject successfully created!
 ```
 
-Далее откроется Visual Studio Code с созданным решением!
-
 Весь скрипт прокомментирован и поделён на блоки, можете отредактировать на своё усмотрение в любом текстовом редакторе!
-
 
 ## Примеры использования кода
 
@@ -113,19 +139,33 @@ EntityGenerator.Initialize(_ecsWorld);
 EntityGenerator.NewEntity()
     .With(new GridSize() { Point = new(64) });
 
-EntityGenerator.NewEntity()
+// Сохранение entity в переменную с помощью функции "End"
+int playerEntity = EntityGenerator.NewEntity()
     .With(new PlayerMarker())
     .With(new Sprite(_playerTexture))
     .With(new Coordinate(2, 3))
     .With(new FrameCount(5))
-    .With(new CurrentFrame(2));
+    .With(new CurrentFrame(2))
+    .End();
 
+// Добавление новых компонентов в существующую сущность
 EntityGenerator.FillEntity(playerEntity)
     .With(new OnFire())
     .With(new EffectDuration(3f));
 ```
 
-Лучше оставлять явным определение внутренних полей без конструктора, когда неочевидно, какое значение находится внутри.
+Лучше оставлять явным определение внутренних полей без конструктора, когда неочевидно, какое значение находится внутри. Альтернативный способ - явно указывать имена параметров:
+
+```csharp
+var firstPlayer = EntityGenerator.NewEntity()
+    .With(new Player())
+    .With(new PlayerIcon(firstPlayerIcon))
+    .With(new CursorIcon(firstPlayerCursor, origin: new(16)))
+    .With(new Figure(firstPlayerSign))
+    .With(new FigureTexture(firstPlayerFigure, frameCount: 8))
+    .With(new SpriteColor(Color.Green))
+    .End();
+```
 
 ### Расширение Pool
 
@@ -180,6 +220,10 @@ public void Run(IEcsSystems systems)
     foreach (var entity in worldSettingFilter)
     {
         setting = _worldSettingPool.Get(entity);
+        // Опционально можно поместить break для перестраховки, что код считает только 1 сущность.
+        // Хотя лучше предотвратить неправильное количество сущностей,
+        // чем исправлять ошибки потом во всех остальных местах.
+        break;
     }
 
     // * Дальнейшая логика с NPC *
@@ -194,13 +238,11 @@ if (entityCount != 1)
 {
     throw new Exception("Неправильное количество сущностей: " + entityCount.ToString());
 }
-else
+
+foreach (var entity in _filter)
 {
-    foreach (var entity in _filter)
-    {
-        setting = _worldSettingPool.Get(entity);
-        break;
-    }
+    setting = _worldSettingPool.Get(entity);
+    break;
 }
 ```
 
@@ -226,13 +268,14 @@ public void Run(IEcsSystems systems)
 }
 ```
 
+Важный комментарий после некоторого времени работы с этим:
+> Данный код с DeltaTime я исправил на `static` класс. Я всё ещё изучаю ECS, поэтому это расширение пока немного поживёт. Если не найдётся настоящего случая, где это понадобится, я удалю этот `Extension`-метод.
+
 ## Ввод (Клавиатура, мышь, геймпад)
 
 Я добавил свои классы, работающие с оригинальными классами Mouse, Keyboard и GamePad, чтобы добавить достаточно распространённый стандартный функционал (была ли только что нажата кнопка/клавиша, насколько курсор мыши переместился по отношению к предыдущему кадру).
 
-> Личная заметка: оригинальный API, работающий с устройствами поразительно непостоянен в плане списка функций.
-У клавиатуры и геймпада (а именно - у их состояний) есть свои методы на проверку, в каком состоянии каждая из кнопок: отпущена или нажата. У мыши почему-то это отсутствует, однако внутреннее устройство сохранения данных
-достаточно похоже.
+> Личная заметка: оригинальный API, работающий с устройствами поразительно непостоянен в плане списка функций. У клавиатуры и геймпада (а именно - у их состояний) есть свои методы на проверку, в каком состоянии каждая из кнопок: отпущена или нажата. У мыши почему-то это отсутствует, однако внутреннее устройство сохранения данных достаточно похоже.
 
 Поэтому я предоставляю достаточно простые классы с постоянным, одинаковым именованием функций.
 
@@ -366,4 +409,4 @@ _entityGenerator.NewEntity()
 
 ## Комментарий
 
-Все эти решения используются мной. По мере развития собственного проекта и б**о**льшего применения данных инструментов я буду их улучшать и увеличивать их количество.
+Все эти решения используются мной. По мере развития собственного проекта и бОльшего применения данных инструментов я буду их улучшать и увеличивать их количество.
