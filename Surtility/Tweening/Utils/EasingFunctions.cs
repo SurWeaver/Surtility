@@ -1,4 +1,4 @@
-namespace Surtility.Tweening;
+namespace Surtility.Tweening.Utils;
 
 
 /// <summary>

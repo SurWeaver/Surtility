@@ -1,6 +1,7 @@
 using Leopotam.EcsLite;
 using Surtility.Extensions;
 using Surtility.Tweening.Components;
+using Surtility.Tweening.Utils;
 
 namespace Surtility.Tweening.Systems;
 
