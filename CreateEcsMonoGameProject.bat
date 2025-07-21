@@ -14,6 +14,7 @@ dotnet new sln -n %1
 dotnet new classlib -o %1.Core
 dotnet new mgdesktopgl -o %1.Main
 
+@REM Создание Git-репозитория, добавление в него модуля с Surtility и его обновление
 git init
 git submodule add https://github.com/SurWeaver/Surtility.git
 git submodule update --init --recursive
@@ -39,6 +40,7 @@ cd ..\%1.Main\
 dotnet add reference ..\%1.Core\%1.Core.csproj
 mkdir Content\Textures,Content\Fonts,Content\Sounds
 
+@REM Сборка проекта в главной папке и вывод об успешном завершении
 cd ..
 dotnet build
 ECHO Project %1 successfully created!
