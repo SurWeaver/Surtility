@@ -1,6 +1,7 @@
 using Leopotam.EcsLite;
 using Surtility.Tweening.Components;
 using Surtility.Timing;
+using Surtility.Timing.Components;
 
 namespace Surtility.Tweening.Systems;
 
@@ -15,6 +16,7 @@ public class UpdateTweenTimeSystem
         var world = systems.GetWorld();
 
         _tweenFilter = world.Filter<Tween>()
+            .Exc<Delay>()
             .End();
 
         _tweenPool = world.GetPool<Tween>();

@@ -1,4 +1,5 @@
 using Leopotam.EcsLite;
+using Surtility.Timing.Components;
 using Surtility.Tweening.Components;
 using Surtility.Tweening.Utils;
 
@@ -20,6 +21,7 @@ public class AnimateComponentSystem<TComponent, TValue>(RefDelegates.MapSaveFunc
         _filter = _world.Filter<Target>()
             .Inc<TweenCurrentValue<TValue>>()
             .Inc<TComponent>()
+            .Exc<Delay>()
             .End();
 
         _tweenPool = _world.GetPool<TweenCurrentValue<TValue>>();

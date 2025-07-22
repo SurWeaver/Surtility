@@ -1,5 +1,6 @@
 using Leopotam.EcsLite;
 using Surtility.Extensions;
+using Surtility.Timing.Components;
 using Surtility.Tweening.Components;
 using Surtility.Tweening.Utils;
 
@@ -21,6 +22,7 @@ public class UpdateTweenValueSystem<T>(Func<T, T, float, T> lerpFunction)
         _filter = world.Filter<Tween>()
             .Inc<Easing>()
             .Inc<TweenValuePair<T>>()
+            .Exc<Delay>()
             .End();
 
         _tweenPool = world.GetPool<Tween>();
